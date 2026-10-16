@@ -1,29 +1,3 @@
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<title>Bwiza Chez Mahoro</title>
-<script src="https://sdk.minepi.com/pi-sdk.js"></script>
-<script>Pi.init({ version: "2.0" })</script>
-</head>
-<body style="text-align:center; padding:50px;">
-<h1>Bwiza Chez Mahoro</h1>
-<h2>Costume Homme - 2.5 Pi</h2>
-<button onclick="nyishura()" style="padding:15px 30px; font-size:20px; background:gold; border:none; border-radius:10px;">Ishura na Pi</button>
-<script>
-function nyishura() {
-  Pi.authenticate(['payments'], function(auth) {
-    Pi.createPayment({ amount: 2.5, memo: "Costume Homme" }, {
-      onReadyForServerCompletion: function(id, txid) {
-        alert("Murakoze! ✅");
-      },
-      onCancel: function() { alert("Mwacikaniye"); },
-      onError: function(e) { alert("Ikibazo: " + e); }
-    });
-  });
+export default function handler(req, res) {
+  res.status(200).json({ approved: true });
 }
-</script>
-</body>
-</html>
