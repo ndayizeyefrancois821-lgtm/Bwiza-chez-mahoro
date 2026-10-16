@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bwiza Chez Mahoro</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>body{font-family:sans-serif;margin:0;background:#f6fff6}header{background:#16a34a;color:#fff;padding:20px;text-align:center}.card{background:#fff;margin:15px;padding:15px;border-radius:12px}button{background:#16a34a;color:#fff;border:0;padding:12px;width:100%;border-radius:8px;font-size:16px}</style>
+</head>
+<body>
+<header><h1>🌱 Bwiza Chez Mahoro</h1><p>Burundi Agro - Pi Payment</p></header>
+<div class="card"><h2>Murakaza neza!</h2><p>Tugurisha: Ibirayi, Ibigori, Imboga.</p><button onclick="pay()">Ishura na Pi</button><p id="s"></p></div>
+<script>Pi.init({version:"2.0"});function pay(){document.getElementById('s').innerText='Turi guhamagara Pi...';Pi.createPayment({amount:0.001,memo:"Bwiza"},{onReadyForServerApproval:id=>{document.getElementById('s').innerText='Emeza muri Pi Browser'},onReadyForServerCompletion:(i,t)=>{document.getElementById('s').innerText='Vyishuwe!'},onCancel:()=>{document.getElementById('s').innerText='Wahagaritse'},onError:e=>{document.getElementById('s').innerText=e}});}</script>
+</body>
+</html>
