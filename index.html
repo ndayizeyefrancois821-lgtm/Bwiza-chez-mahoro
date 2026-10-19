@@ -1,41 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bwiza Chez Mahoro</title>
-<script src="https://sdk.minepi.com/pi-sdk.js"></script>
-<style>
-body{font-family:Arial;background:#f5f5f0;margin:0}
-header{background:#2c5f2d;color:white;padding:20px;text-align:center}
-.card{background:white;margin:15px;padding:20px;border-radius:12px}
-button{background:#2c5f2d;color:white;border:none;padding:15px;width:100%;border-radius:8px;font-size:18px}
-</style>
-</head>
-<body>
-<header><h1>Bwiza Chez Mahoro</h1><p>Bujumbura</p></header>
-<div class="card">
-<h2>Chambre - 10 Pi</h2>
-<button id="payBtn" onclick="pay()">Payer avec Pi</button>
-<p id="status"></p>
-</div>
-<script>
-Pi.init({version:"2.0",sandbox:true});
-async function pay(){
-const s=document.getElementById('status');
-const b=document.getElementById('payBtn');
-b.disabled=true;s.innerText="Connexion...";
-try{
-const onInc=(p)=>{fetch('/api/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:p.identifier,txid:p.transaction.txid})})};
-await Pi.authenticate(['payments'],onInc);
-Pi.createPayment({amount:10,memo:"Chambre Bwiza",metadata:{room:"std"}},{
-onReadyForServerApproval:async(id)=>{s.innerText="Approbation...";await fetch('/api/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id})});},
-onReadyForServerCompletion:async(id,txid)=>{s.innerText="Finalisation...";await fetch('/api/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id,txid:txid})});s.innerText="Paiement reussi!";b.disabled=false;},
-onCancel:(id)=>{s.innerText="Annule";b.disabled=false;},
-onError:(e)=>{s.innerText="Erreur "+e.message;b.disabled=false;}
-});
-}catch(e){s.innerText=e.message;b.disabled=false;}
-}
-</script>
-</body>
-</html>
+// Uzasanga bimeze gutya - hindura umubare gusa:
+price: 50  ->  price: 0.5
+price: 2   ->  price: 0.5
+price: 800 ->  price: 1
