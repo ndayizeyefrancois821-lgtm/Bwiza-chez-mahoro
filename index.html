@@ -1,58 +1,69 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Bwiza Chez Mahoro</title>
-<script src="https://sdk.minepi.com/pi-sdk.js"></script>
-<style>
-body{font-family:Arial;background:#F5F5F0;margin:0}
-header{background:#2C5F2D;color:white;padding:20px;text-align:center}
-.card{background:white;margin:20px;padding:20px;border-radius:10px}
-button{background:#2C5F2D;color:white;border:none;padding:12px;width:100%;border-radius:5px;font-size:16px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BWIZA Chez Mahoro</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script>
+    Pi.init({ version: "2.0", sandbox: true });
+  </script>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; padding: 20px; margin: 0; }
+    .card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .btn { background: #6B21A8; color: white; padding: 14px; border: none; border-radius: 10px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; }
+    h1 { color: #6B21A8; text-align: center; }
+    .price { font-size: 18px; font-weight: bold; color: #333; }
+  </style>
 </head>
 <body>
-<header><h1>Bwiza Chez Mahoro</h1><p>Bujumbura</p></header>
 
-<div class="card">
-<h2>Chambre - 10 Pi</h2>
-<button onclick="pay(10,'Chambre')">Payer 10 Pi</button>
-</div>
+  <h1>BWIZA Chez Mahoro</h1>
+  <p style="text-align:center;">Kanyosha - Location Services</p>
 
-<div class="card">
-<h2>Kanzu - 0.5 Pi</h2>
-<button onclick="pay(0.5,'Kanzu')">Payer 0.5 Pi</button>
-</div>
+  <div class="card">
+    <h2>Location Salle</h2>
+    <p>Salle for events, weddings, meetings</p>
+    <p class="price">Price: 5 Pi / day</p>
+    <button class="btn" onclick="payWithPi(5, 'Location Salle')">Pay with Pi - 5 Pi</button>
+  </div>
 
-<div class="card">
-<h2>Costume - 0.5 Pi</h2>
-<button onclick="pay(0.5,'Costume')">Payer 0.5 Pi</button>
-</div>
+  <div class="card">
+    <h2>Location Pantalon</h2>
+    <p>Pants, costumes rental</p>
+    <p class="price">Price: 0.5 Pi / day</p>
+    <button class="btn" onclick="payWithPi(0.5, 'Location Pantalon')">Pay with Pi - 0.5 Pi</button>
+  </div>
 
-<div class="card">
-<h2>Salle - 1 Pi</h2>
-<button onclick="pay(1,'Salle')">Payer 1 Pi</button>
-</div>
+  <script>
+    async function payWithPi(amount, memo) {
+      try {
+        const auth = await Pi.authenticate(['payments', 'username'], () => {});
+        
+        await Pi.createPayment({
+          amount: amount,
+          memo: "BWIZA - " + memo,
+          metadata: { service: memo }
+        }, {
+          onReadyForServerApproval: function(paymentId) {
+            console.log("Approval:", paymentId);
+          },
+          onReadyForServerCompletion: function(paymentId, txid) {
+            alert("Payment successful! " + memo + " - Tx: " + txid);
+          },
+          onCancel: function(paymentId) {
+            alert("Payment cancelled");
+          },
+          onError: function(error) {
+            alert("Error: " + error.message);
+          }
+        });
 
-<p id="status" style="text-align:center;font-weight:bold"></p>
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    }
+  </script>
 
-<script>
-Pi.init({version:"2.0",sandbox:true});
-async function pay(amount,name){
- const s=document.getElementById('status');
- s.innerText="Connexion...";
- try{
-   await Pi.authenticate(['payments'],()=>{});
-   Pi.createPayment({amount:amount,name:name},{
-     onReadyForServerApproval:async(id)=>{s.innerText="Approbation...";await fetch('/api/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id})});},
-     onReadyForServerCompletion:async(id,txid)=>{s.innerText="Paye "+amount+" Pi reussi!";await fetch('/api/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id,txId:txid})})},
-     onCancel:()=>{s.innerText="Annule";},
-     onError:(e,m)=>{s.innerText="Erreur "+m.message;}
-   });
- }catch(e){s.innerText=e.message;}
-}
-</script>
 </body>
 </html>
